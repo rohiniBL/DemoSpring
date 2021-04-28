@@ -9,6 +9,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserService implements IUser{
 
@@ -30,8 +32,37 @@ public class UserService implements IUser{
         return response;
     }
 
-    public Long getById(long id){
+//    public Long getById(long id){
+//        User user = userRepository.findById(id).orElseThrow(() -> new UserException(400, "ID not Found"));
+//        return user.getId();
+//    }
+
+    public User getById(long id){
         User user = userRepository.findById(id).orElseThrow(() -> new UserException(400, "ID not Found"));
-        return user.getId();
+        return user;
+    }
+
+    @Override
+    public List<User> getAll() {
+        return userRepository.findAll();
+    }
+
+    @Override
+    public Response updateEmployees(long id, UserDto userDto) {
+        User user = userRepository.findById(id).orElseThrow(() -> new UserException(400, "ID not Found"));
+        user.setFname(userDto.getFname());
+        user.setEmail(userDto.getEmail());
+        user.setLname(userDto.getLname());
+        userRepository.save(user);
+        Response response=new Response(200, "Update Record Sucessfully");
+        return response;
+    }
+
+    @Override
+    public Response deleteEmployee(long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new UserException(400, "ID not Found"));
+        userRepository.delete(user);
+        Response response=new Response(200, "Deleted Record Sucessfully");
+        return response;
     }
 }

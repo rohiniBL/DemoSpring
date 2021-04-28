@@ -8,14 +8,14 @@ import com.bridgelabz.springfirst.utility.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Repository;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
-@RequestMapping("/hello")
+@RequestMapping("/employee")
+@CrossOrigin
 public class DemoController {
 
     @Autowired
@@ -44,17 +44,40 @@ public class DemoController {
     }
 
 
-
-    @PutMapping(value = "/{name}")
-    public String update(@PathVariable(value = "name") String name,@RequestParam(value = "lname") String lname){
-        System.out.println("UserName"+name+"LastName"+lname);
-        return name+" =="+lname;
+    @PutMapping(value = "/{id}")
+    public  ResponseEntity<Response> updateEmployee(@PathVariable(value = "id") long id,@RequestBody UserDto userDto ){
+        Response response=iUser.updateEmployees(id,userDto);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @DeleteMapping(value = "/{id}")
+    public  ResponseEntity<Response> delete(@PathVariable(value = "id") long id ){
+        Response response=iUser.deleteEmployee(id);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+
+
+
+//    @PutMapping(value = "/{name}")
+//    public String update(@PathVariable(value = "name") String name,@RequestParam(value = "lname") String lname){
+//        System.out.println("UserName"+name+"LastName"+lname);
+//        return name+" =="+lname;
+//    }
+
+//    @GetMapping(value = "/getData/{id}")
+//    public Long getByID(@PathVariable(value = "id") long id){
+//        return iUser.getById(id);
+//    }
+
     @GetMapping(value = "/getData/{id}")
-    public Long getByID(@PathVariable(value = "id") long id){
+    public User getByID(@PathVariable(value = "id") long id){
         return iUser.getById(id);
     }
 
+    @GetMapping(value = "/list")
+    public List<User> findAll(){
+        return iUser.getAll();
+    }
 
 }
